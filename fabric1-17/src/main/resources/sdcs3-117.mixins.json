@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "de.saschat.sdcs3.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "server": [
+    "PlayerManagerMixin",
+    "ServerPlayNetworkHandlerMixin",
+    "ServerLoginNetworkHandlerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

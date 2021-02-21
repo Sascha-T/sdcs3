@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "sdcs3-117",
+  "version": "${version}",
+  "name": "sdcs3",
+  "description": "",
+  "authors": [
+    "Sascha_T"
+  ],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/sdcs3-117/icon.png",
+  "environment": "server",
+  "entrypoints": {
+    "server": [
+      "de.saschat.sdcs3.SDCS3"
+    ]
+  },
+  "mixins": [
+    "sdcs3-117.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.11.1",
+    "fabric": "*",
+    "minecraft": "1.17-alpha.21.7.a"
+  }
+}

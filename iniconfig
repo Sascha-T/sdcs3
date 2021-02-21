@@ -1,0 +1,130 @@
+package de.saschat.sdcs3.common.config.impl;
+
+import de.saschat.sdcs3.common.config.Config;
+import de.saschat.sdcs3.common.config.ConfigAdaptorArguments;
+
+import java.io.*;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+/*
+    INIConfig (no dependencies) (default second to implementation-specific)
+
+    Extremely simple config sitting in the root of the minecraft server.
+    (But absolutely horrid)
+
+    key = value
+ */
+public class INIConfig extends Config {
+    public File file;
+    protected HashMap<String, String> memory;
+
+    public INIConfig() {}
+
+    @Override
+    public String get(String key) {
+        return null;
+    }
+
+    @Override
+    public void set(String key, String value) {
+
+    }
+
+    @Override
+    public void save(Writer writer) {
+        Set<Map.Entry<String, String>> set = memory.entrySet();
+        List<Map.Entry<String, String>> list = new LinkedList<>();
+        list.addAll(set);
+
+        list.sort(new Comparator<Map.Entry<String, String>>() {
+            @Override
+            public int compare(Map.Entry<String, String> o1, Map.Entry<String, String> o2) {
+                String key1 = o1.getKey();
+                String key2 = o2.getKey();
+
+                if(key1.contains(".") && key2.contains(".")) {
+                    return key1.compareTo(key2);
+                } else {
+                    if(key1.contains("."))
+                        return 1;
+                    else if(key2.contains("."))
+                        return -1;
+                    else
+                        return key1.compareTo(key2);
+                }
+
+            }
+        });
+
+        try {
+            String curSect = "";
+            for (Map.Entry<String, String> entry : list) {
+                if(entry.getKey().contains(".")) { // Contains section?
+                    if (!curSect.equals(entry.getKey().split("\\.")[0])) { // Not in this section already?
+                        curSect = entry.getKey().split("\\.")[0]; // Get section.
+                        writer.write("[" + curSect + "]" + System.lineSeparator()); // Write section.
+                        writer.write(entry.getKey() + "=" + entry.getValue() + System.lineSeparator());
+                    }
+                    writer.write(entry.getKey().split("\\.")[entry.getKey().split("\\.").length - 1] + "=" + entry.getValue() + System.lineSeparator());
+                } else {
+                    writer.write(entry.getKey() + "=" + entry.getValue() + System.lineSeparator());
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @Override
+    public void load(ConfigAdaptorArguments a, boolean loadDefault) {
+        file = new File(a.minecraft_root, "sdcs.ini");
+        memory = new HashMap();
+        if(!file.exists()) {
+            try {
+                if(loadDefault) {
+                    load_memory(DEFAULT_CONFIG);
+                    save(new OutputStreamWriter(System.out, "UTF8"));
+                    save(new FileWriter(file));
+                }
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        try {
+            memory = new HashMap<>();
+
+            Pattern section_pattern = Pattern.compile("/^\\[(.*)\\]$/");
+            Pattern entry_pattern = Pattern.compile("/^(\\w+)\\s*=\\s*(\\w+)$/");
+
+            FileReader reader = new FileReader(file);
+            Scanner scanner = new Scanner(reader);
+            String section = null;
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                Matcher section_matcher = section_pattern.matcher(line);
+                if(section_matcher.matches()) {
+                    section = section_matcher.group();
+                } else {
+                    Matcher entry_matcher = entry_pattern.matcher(line);
+                    if(!entry_matcher.matches())
+                        continue;
+                    if(section == null) {
+                        memory.put(entry_matcher.group(0), entry_matcher.group(1));
+                    } else {
+                        memory.put(section + "." + entry_matcher.group(0), entry_matcher.group(1));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void load_memory(HashMap<String, String> config) {
+        memory = config;
+    }
+}
