@@ -39,6 +39,28 @@ processResources {
     }
 }
 
+
+shadowJar {
+    minimize()
+    /*dependencies {
+        include(dependency('com.github.dv8fromtheworld:JDA:4.1.1'))
+        include(dependency('com.github.MrPowerGamerBR:TemmieWebhook:59de40c3b6'))
+        include(dependency('net.sf.trove4j:trove4j:3.0.3'))
+        include(dependency('org.slf4j:slf4j-api:1.7.25'))
+        include(dependency('org.apache.commons:commons-collections4:4.1'))
+        include(dependency('com.squareup.okhttp3:okhttp:3.13.0'))
+        include(dependency('com.squareup.okio:okio:1.17.2'))
+        include(dependency('com.neovisionaries:nv-websocket-client:2.9'))
+        include(dependency('com.fasterxml.jackson.core:jackson-databind:2.10.1'))
+        include(dependency('net.java.dev.jna:jna:4.4.0'))
+        include(dependency('club.minnced:opus-java:1.0.4@pom'))
+    }*/
+    dependencies {
+        include(dependency(':common'))
+    }
+
+}
+
 remapJar {
     dependsOn shadowJar
     input = shadowJar.archivePath
