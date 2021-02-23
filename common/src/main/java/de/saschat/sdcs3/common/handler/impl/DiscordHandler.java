@@ -19,9 +19,11 @@ import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.EventListener;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -52,7 +54,7 @@ public class DiscordHandler extends Handler implements EventListener {
         if (config.get("discord.mainChannel") == null)
             return false;
         String token = config.get("discord.token");
-        JDABuilder builder = JDABuilder.createDefault(token).addEventListeners(this);
+        JDABuilder builder = JDABuilder.createDefault(token, EnumSet.allOf(GatewayIntent.class)).addEventListeners(this);
         try {
             jda = builder.build();
             jda.awaitReady();

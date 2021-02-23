@@ -46,7 +46,6 @@ public class JSONConfig extends Config {
         }
         try {
             String json = gson.toJson(output);
-            System.out.println(json);
             out.write(json);
             out.flush();
             out.close();
