@@ -237,11 +237,11 @@ public class DiscordHandler extends Handler implements EventListener {
                 broadcast.Content = msg.getContentDisplay();
                 broadcast.Name = msg.getAuthor().getName() + "#" + msg.getAuthor().getDiscriminator();
 
+                broadcast.Nickname = msg.getAuthor().getName();
                 Member nick = recv.getMember();
                 if (nick != null)
-                    broadcast.Nickname = nick.getNickname();
-                else
-                    broadcast.Nickname = msg.getAuthor().getName();
+                    if(nick.getNickname() != null)
+                        broadcast.Nickname = nick.getNickname();
                 broadcast.Picture = msg.getAuthor().getAvatarUrl();
                 broadcast.Service = "Discord";
 
